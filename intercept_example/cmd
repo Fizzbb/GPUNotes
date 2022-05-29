@@ -1,0 +1,19 @@
+#!/bin/bash
+
+for arg in "$@"; do
+  if [[ "$arg" = bhook ]]; then
+    nvcc -shared -lcuda --compiler-options '-fPIC' hook_memcpy.cu -o hook_memcpy.so
+  fi
+  if [[ "$arg" = bmain ]]; then 
+    nvcc -lcuda hook_memcpy_test.cpp -o demo_mem
+  fi
+  if [[ "$arg" = test ]]; then
+    LD_PRELOAD=./hook_memcpy.so ./demo_mem
+  fi
+  if [[ "$arg" = testtf ]]; then
+    LD_PRELOAD=./hook_memcpy.so python mnist.py
+  fi
+  if [[ "$arg" = testtorch ]]; then
+    LD_PRELOAD=./hook_memcpy.so python torch_test.py
+  fi
+done
