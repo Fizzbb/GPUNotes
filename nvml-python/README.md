@@ -5,7 +5,7 @@ We basically want to query device-level utilization (memory, io, sm) and process
 
 [Nvidia function definition](https://docs.nvidia.com/deploy/nvml-api/group__nvmlGridQueries.html#group__nvmlGridQueries_1gb0ea5236f5e69e63bf53684a11c233bd)
 
-**the following function works on TitanX and V100, does not respond in K80**
+**the following function works on RTX2080, TitanX and V100, does not respond in K80**
 
 ```
 nvmlReturn_t nvmlDeviceGetProcessUtilization ( nvmlDevice_t device, nvmlProcessUtilizationSample_t* utilization, unsigned int* processSamplesCount, unsigned long long lastSeenTimeStamp ) 
@@ -14,7 +14,9 @@ nvmlReturn_t nvmlDeviceGetProcessUtilization ( nvmlDevice_t device, nvmlProcessU
 ```
 lastSeenTimeStamp Return only samples with timestamp greater than lastSeenTimeStamp. If set 0, return all available values.
 ```
-The timestamp unit seems to be micro second.
+The timestamp unit is micro second.
+
+When there is no sample found, still return a list of 100 all zeros sample. Need to double check if the pid is not 0, to get the valid results.
 
 Sample outputs
 ```
